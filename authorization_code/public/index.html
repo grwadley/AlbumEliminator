@@ -1,7 +1,10 @@
 <!doctype html>
 <html>
   <head>
-    <title>Example of the Authorization Code flow with Spotify</title>
+    <title>Album Eliminator</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="albumEliminator.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
       #login, #loggedin {
@@ -17,50 +20,96 @@
   </head>
 
   <body>
+    <div class="container-fluid">
+
+    <div class="page-header">
+      <h1>Album Eliminator <small> your Spotify music showdown</small></h1>
+    </div>
+
+    </div> <!-- /container -->
+
+
     <div class="container">
-      <div id="login">
-        <h1>This is an example of the Authorization Code flow</h1>
+    <div id = login class="jumbotron">
+        <h1>Login with Spotify credentials to begin</h1>
         <a href="/login" class="btn btn-primary">Log in with Spotify</a>
-      </div>
+    </div>
+    <div id = notEnoughAlbums class="jumbotron">
+        <h1>You don't have enough albums!</h1> 
+        <h3>This application will only gather albums you have saved, not those which you have saved specific tracks</h3>
+    </div>
       <div id="loggedin">
-        <div id="user-profile">
+        <div id="matchup">
         </div>
-        <div id="oauth">
-        </div>
-        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+      </div>
+      <div id="finished">
+      </div>
+      <div id="finalists">
       </div>
     </div>
 
-    <script id="user-profile-template" type="text/x-handlebars-template">
-      <h1>Logged in as {{display_name}}</h1>
-      <div class="media">
-        <div class="pull-left">
-          <img class="media-object" width="150" src="{{images.0.url}}" />
+    <script id="saved-albums-template" type="text/x-handlebars-template">
+      <h4>Contenders remaining: {{albumsRemaining}}/{{total}}<a href="javascript:void(0)" id="passButton" class="btn btn-primary pull-right" role="button">Pass ({{skipsRemaining}})
+        <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+      </a></h4>
+      <br></br>
+      <div class="row">
+        <div class="col-sm-6"><!--Column left-->
+          <div class="thumbnail">
+            <img src="{{album1.images.0.url}}" alt="...">
+            <div class="caption">
+              <h3>{{album1.artists.0.name}}</h3>
+              <h4>{{album1.name}}</h4>
+              <p id="position1" hidden>{{position1}}</p>
+              <p><a href="javascript:void(0)" id="button1" class="btn btn-primary btn-block" role="button">Select</a></p>
+            </div>
+          </div>
         </div>
-        <div class="media-body">
-          <dl class="dl-horizontal">
-            <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
-            <dt>Id</dt><dd>{{id}}</dd>
-            <dt>Email</dt><dd>{{email}}</dd>
-            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
-            <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
-            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
-            <dt>Country</dt><dd>{{country}}</dd>
-          </dl>
+        <div class="col-sm-6"><!--Column left-->
+          <div class="thumbnail">
+            <img src="{{album2.images.0.url}}" alt="...">
+            <div class="caption">
+              <h3>{{album2.artists.0.name}}</h3>
+              <h4>{{album2.name}}</h4>
+              <p id="position2" hidden>{{position2}}</p>
+              <p><a href="javascript:void(0)" id="button2" class="btn btn-primary btn-block" role="button">Select</a></p>
+            </div>
+          </div>
         </div>
-      </div>
+    </div>
     </script>
 
-    <script id="oauth-template" type="text/x-handlebars-template">
-      <h2>oAuth info</h2>
-      <dl class="dl-horizontal">
-        <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
-        <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}></dd>
-      </dl>
-    </script>
+  <script id="finished-template" type="text/x-handlebars-template"> 
+    <div class="alert alert-success" role="alert">Done! Here are your top Albums</div>
+    <div class="col-sm-8">
+      <div class="thumbnail">
+            <img src="{{1.images.0.url}}" alt="...">
+            <div class="caption">
+              <h3>{{1.artists.0.name}}</h3>
+              <h4>{{1.name}}</h4>
+            </div>
+        </div>
+    </div>
+  </script>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script id="finalists-template" type="text/x-handlebars-template"> 
+    <div class="col-sm-8 col-centered">
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-success"><span class="badge badge-info">1</span> <h5>{{1.artists.0.name}}: {{1.name}}</h5></li>
+      <li class="list-group-item"><span class="badge badge-info">2</span> {{2.artists.0.name}}: {{2.name}}</li>
+      <li class="list-group-item"><span class="badge badge-info">3</span> {{3.artists.0.name}}: {{3.name}}</li>
+      <li class="list-group-item"><span class="badge badge-info">4</span> {{4.artists.0.name}}: {{4.name}}</li>
+      <li class="list-group-item"><span class="badge badge-info">5</span> {{5.artists.0.name}}: {{5.name}}</li>
+      <li class="list-group-item"><span class="badge badge-info">6</span> {{6.artists.0.name}}: {{6.name}}</li>
+      <li class="list-group-item"><span class="badge badge-info">7</span> {{7.artists.0.name}}: {{7.name}}</li>
+      <li class="list-group-item"><span class="badge badge-info">8</span> {{8.artists.0.name}}: {{8.name}}</li>
+      <li class="list-group-item"><span class="badge badge-info">9</span> {{9.artists.0.name}}: {{9.name}}</li>
+      <li class="list-group-item"><span class="badge badge-info">10</span>{{10.artists.0.name}}: {{10.name}}</li>
+    </ul>
+    <div>
+  </script>
+
+
     <script>
       (function() {
 
@@ -78,65 +127,205 @@
           return hashParams;
         }
 
-        var userProfileSource = document.getElementById('user-profile-template').innerHTML,
-            userProfileTemplate = Handlebars.compile(userProfileSource),
-            userProfilePlaceholder = document.getElementById('user-profile');
+        /**
+         * Adds all albums of a user to the global albums array
+         */
+        function getAlbums(){
+          var processed=0;
+          var offset=0;
+          var tempAlbum;
+          var connSuccess=false;
 
-        var oauthSource = document.getElementById('oauth-template').innerHTML,
-            oauthTemplate = Handlebars.compile(oauthSource),
-            oauthPlaceholder = document.getElementById('oauth');
+          $.ajax({
+            url: 'https://api.spotify.com/v1/me/albums?limit=1',
+            headers: {
+              'Authorization': 'Bearer ' + access_token
+            },
+            success: function(response) {
+              connSuccess=true;
+              albumCount=response.total;
+              if(albumCount>10){
+                getAlbumsRequests(0,albumCount);
+              } else {
+                $('#notEnoughAlbums').show();
+              }
+            }
+          });
+        }
+
+        /**
+         * Function responsible for making requests to Spotify for albums. limit is set to 50 per request.
+         */
+        function getAlbumsRequests(processed, albumCount){
+          console.log('processed: '+processed+' albumCount: '+albumCount);
+          var deferreds = [];
+          while(processed<albumCount){
+            deferreds.push(
+              $.ajax({
+                url: 'https://api.spotify.com/v1/me/albums?offset='+processed+'&limit=50',
+                headers: {
+                  'Authorization': 'Bearer ' + access_token
+                },
+                success: function(response) {
+                  for(i=0; i<response.items.length; i++){
+                    albums.push(response.items[i].album);
+                  }
+                }
+              })
+            );
+            processed+=50;
+          }
+          $.when.apply(null,deferreds).done(function(){
+            removeSingles();
+            displayMatchup();
+          });
+        }
+
+        function displayMatchup(){
+          var matchupDisplay = selectAlbums(albums.length);
+          matchupPlaceholder.innerHTML = matchupTemplate(matchupDisplay);
+          if(pass<1){
+            $("#passButton").hide();
+          }
+          $( "#button1" ).click(function() {
+            var loser = $("#position2").text();
+            updateDisplay(loser);
+          });
+          $( "#button2" ).click(function() {
+            var loser = $("#position1").text();
+            updateDisplay(loser);
+          });
+          $("#passButton").click(function(){
+            console.log('pass');
+            resetView();
+          });
+        }
+
+        function updateDisplay(loser){
+            removeLoser(loser);
+            if(albums.length>1){
+              displayMatchup();
+            } else {
+              finalists[albums.length] = albums[0];
+              finalistsPlaceholder.innerHTML = finalistsTemplate(finalists);
+              finishedPlaceholder.innerHTML =finishedTemplate(finalists);
+              $('#loggedin').hide();
+              $('#finished').show();
+            }
+        }
+
+        /**
+         * Removes albums which only have 1 song from the array
+         */
+        function removeSingles(){
+          for(i=0; i<albums.length; i++){
+            if(albums[i].tracks.items.length<2){
+              albums.splice(i,1);
+            }
+          }
+          albumCount = albums.length;
+        }
+
+        /**
+         * Select two random albums to match up
+         * matchup format is [Album 1, Position 1, Album 2, Posistion 2]
+         */
+        function selectAlbums(albumsRemaining, total){
+          var r1 = Math.floor(Math.random() * albumsRemaining);
+          var r2 = Math.floor(Math.random() * albumsRemaining);
+          while(r1 == r2){
+            r2 = Math.floor(Math.random() * albumsRemaining);
+          }
+
+          var matchup = {
+            album1: albums[r1],
+            position1: r1,
+            album2: albums[r2],
+            position2: r2,
+            albumsRemaining: albumsRemaining,
+            total:albumCount,
+            skipsRemaining:pass
+          };
+          console.log(matchup);
+          return matchup;
+        }
+
+        /**
+         * remove the unselected album from the list. If this is one of the final 10 albums, add it to finalists
+         */
+        function removeLoser(losingAlbum){
+          eliminated.push(albums[losingAlbum]);
+
+          if(albums.length<11){
+            //finalists.push(albums[losingAlbum]);
+            finalists[albums.length] = albums[losingAlbum];
+            finalistsPlaceholder.innerHTML = finalistsTemplate(finalists);
+            $('#finalists').show();
+            console.log(finalists);
+          }
+          albums.splice(losingAlbum,1);
+        }
+
+        /**
+         * Allow people to undo a mistake
+         */        
+        function undoChoice(){
+          if(eliminated.length>0){
+            albums.push(eliminated.pop());
+          }
+          if(finalists.length>0){
+            finalists.pop();
+          }
+          displayMatchup();
+        }
+
+        function resetView(){
+          pass-=1;
+          displayMatchup();
+        }
+
+
+        var savedAlbumsSource = document.getElementById('saved-albums-template').innerHTML,
+            matchupTemplate = Handlebars.compile(savedAlbumsSource),
+            matchupPlaceholder = document.getElementById('matchup')
+
+        var finalistsSource = document.getElementById('finalists-template').innerHTML,
+            finalistsTemplate = Handlebars.compile(finalistsSource),
+            finalistsPlaceholder = document.getElementById('finalists')
+
+        var finishedSource = document.getElementById('finished-template').innerHTML,
+            finishedTemplate = Handlebars.compile(finishedSource),
+            finishedPlaceholder = document.getElementById('finished')
 
         var params = getHashParams();
+
+        var albums=[];
+        var eliminated=[];
+        var finalists={};
+        var albumCount=0;
+        var pass=3;
 
         var access_token = params.access_token,
             refresh_token = params.refresh_token,
             error = params.error;
 
+        $('#finished').hide();
+        $('#notEnoughAlbums').hide();
+
         if (error) {
           alert('There was an error during the authentication');
         } else {
           if (access_token) {
-            // render oauth info
-            oauthPlaceholder.innerHTML = oauthTemplate({
-              access_token: access_token,
-              refresh_token: refresh_token
-            });
-
-            $.ajax({
-                url: 'https://api.spotify.com/v1/me',
-                headers: {
-                  'Authorization': 'Bearer ' + access_token
-                },
-                success: function(response) {
-                  userProfilePlaceholder.innerHTML = userProfileTemplate(response);
-
-                  $('#login').hide();
-                  $('#loggedin').show();
-                }
-            });
+            getAlbums();
+            $('#login').hide();
+            $('#loggedin').show();
           } else {
               // render initial screen
               $('#login').show();
               $('#loggedin').hide();
           }
-
-          document.getElementById('obtain-new-token').addEventListener('click', function() {
-            $.ajax({
-              url: '/refresh_token',
-              data: {
-                'refresh_token': refresh_token
-              }
-            }).done(function(data) {
-              access_token = data.access_token;
-              oauthPlaceholder.innerHTML = oauthTemplate({
-                access_token: access_token,
-                refresh_token: refresh_token
-              });
-            });
-          }, false);
         }
       })();
     </script>
   </body>
 </html>
-
