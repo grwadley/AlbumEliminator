@@ -14,7 +14,7 @@ var cookieParser = require('cookie-parser');
 
 var client_id = '5ecaed443ba94682a4fb1e65d6e44a70'; // Your client id
 var client_secret = 'f81353eccd2c47feb26bf338a93368da'; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var redirect_uri = 'https://fast-thicket-98171.herokuapp.com/callback'; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -141,5 +141,5 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-console.log('Listening on 8888');
-app.listen(8888);
+console.log('Listening on 5000');
+app.listen(process.env.PORT || 5000);
