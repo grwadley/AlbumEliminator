@@ -284,6 +284,12 @@
           displayMatchup();
         }
 
+        function mobileViewCheck(){
+          if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            alert('mobile');
+          }
+        }
+
 
         var savedAlbumsSource = document.getElementById('saved-albums-template').innerHTML,
             matchupTemplate = Handlebars.compile(savedAlbumsSource),
