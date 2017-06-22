@@ -5,7 +5,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="https://use.fontawesome.com/f692544140.js"></script>
-    <script src="albumEliminator.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
       #login, #loggedin {
@@ -45,6 +45,12 @@
         </h1>
     </div>
       <div id="loggedin">
+        <div id="note" class="alert alert-info alert-dismissible" role="alert">
+          <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+          <strong>Pick an album, pick again, find out your top 10</strong>
+        </div>
         <div id="matchup">
         </div>
       </div>
@@ -60,7 +66,7 @@
       </a></h3>
       <br></br>
       <div class="row">
-        <div class="col-sm-6"><!--Column left-->
+        <div class="col-md-6"><!--Column left-->
           <div class="thumbnail">
             <img src="{{album1.images.0.url}}" alt="...">
             <div class="caption">
@@ -71,7 +77,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6"><!--Column left-->
+        <div class="col-md-6"><!--Column left-->
           <div class="thumbnail">
             <img src="{{album2.images.0.url}}" alt="...">
             <div class="caption">
@@ -185,6 +191,7 @@
           $.when.apply(null,deferreds).done(function(){
             removeSingles();
             $("#loading").hide();
+            $("#note").show();
             displayMatchup();
           });
         }
@@ -326,6 +333,7 @@
         $('#finished').hide();
         $('#notEnoughAlbums').hide();
         $('#loading').hide();
+        $('#note').hide();
         mobileViewCheck();
 
         if (error) {
