@@ -24,7 +24,7 @@
     <div class="container-fluid">
 
     <div class="page-header">
-      <h1>Album Eliminator <small> your Spotify music showdown</small></h1>
+      <h1>Album Eliminator <small> your Spotify music showdown</small><i class="fa fa-spotify fa-lg pull-right" aria-hidden="true"></i></h1>
     </div>
 
     </div> <!-- /container -->
@@ -33,7 +33,7 @@
     <div class="container">
     <div id = login class="jumbotron">
         <h1>Login with Spotify credentials to begin</h1>
-        <a href="/login" class="btn btn-primary">Log in with Spotify</a>
+        <a href="/login" class="btn btn-primary">Log in with Spotify <i class="fa fa-spotify" aria-hidden="true"></i></a>
     </div>
     <div id = notEnoughAlbums class="jumbotron container-fluid">
         <h1>You don't have enough albums!</h1> 
@@ -57,7 +57,7 @@
     <script id="saved-albums-template" type="text/x-handlebars-template">
       <h3>Contenders remaining: {{albumsRemaining}}/{{total}}<a href="javascript:void(0)" id="passButton" class="btn btn-primary pull-right" role="button">Pass ({{skipsRemaining}})
         <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-      </a></h4>
+      </a></h3>
       <br></br>
       <div class="row">
         <div class="col-md-6"><!--Column left-->
@@ -272,7 +272,7 @@
         }
 
         /**
-         * Allow people to undo a mistake
+         * Currently not in use: would allows users to undo a mistake. In practice, this just makes the game taken even longer
          */        
         function undoChoice(){
           if(eliminated.length>0){
@@ -289,9 +289,12 @@
           displayMatchup();
         }
 
-        //if this page is being viewed on a mobile device, incease the size of the columns and
+        //if this page is being viewed on a mobile device, increase size of buttons
         function mobileViewCheck(){
           if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            $("#button1").addClass("btn-lg");
+            $("#button2").addClass("btn-lg");
+            $("#passButton").addClass("btn-lg");
           }
         }
 
