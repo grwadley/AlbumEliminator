@@ -4,6 +4,7 @@
     <title>Album Eliminator</title>
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://use.fontawesome.com/f692544140.js"></script>
     <script src="albumEliminator.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
@@ -34,9 +35,14 @@
         <h1>Login with Spotify credentials to begin</h1>
         <a href="/login" class="btn btn-primary">Log in with Spotify</a>
     </div>
-    <div id = notEnoughAlbums class="jumbotron">
+    <div id = notEnoughAlbums class="jumbotron container-fluid">
         <h1>You don't have enough albums!</h1> 
         <h3>This application will only gather albums you have saved, not those for which you have saved specific tracks</h3>
+    </div>
+    <div id= loading>
+        <h1>Loading your Albums  
+          <i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i>
+        </h1>
     </div>
       <div id="loggedin">
         <div id="matchup">
@@ -49,12 +55,12 @@
     </div>
 
     <script id="saved-albums-template" type="text/x-handlebars-template">
-      <h4>Contenders remaining: {{albumsRemaining}}/{{total}}<a href="javascript:void(0)" id="passButton" class="btn btn-primary pull-right" role="button">Pass ({{skipsRemaining}})
+      <h3>Contenders remaining: {{albumsRemaining}}/{{total}}<a href="javascript:void(0)" id="passButton" class="btn btn-primary pull-right" role="button">Pass ({{skipsRemaining}})
         <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
       </a></h4>
       <br></br>
       <div class="row">
-        <div class="col-sm-6"><!--Column left-->
+        <div class="col-md-6"><!--Column left-->
           <div class="thumbnail">
             <img src="{{album1.images.0.url}}" alt="...">
             <div class="caption">
@@ -65,7 +71,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6"><!--Column left-->
+        <div class="col-md-6"><!--Column left-->
           <div class="thumbnail">
             <img src="{{album2.images.0.url}}" alt="...">
             <div class="caption">
@@ -81,7 +87,8 @@
 
   <script id="finished-template" type="text/x-handlebars-template"> 
     <div class="alert alert-success" role="alert">Done! Here are your top Albums</div>
-    <div class="col-sm-8">
+    <div class="row">
+    <div class="col-md-8 col-md-offset-2">
       <div class="thumbnail">
             <img src="{{1.images.0.url}}" alt="...">
             <div class="caption">
@@ -90,10 +97,11 @@
             </div>
         </div>
     </div>
+    </div>
   </script>
 
   <script id="finalists-template" type="text/x-handlebars-template"> 
-    <div class="col-sm-8 col-centered">
+    <div class="col-md-8 col-md-offset-2">
     <ul class="list-group">
       <li class="list-group-item list-group-item-success"><span class="badge badge-info">1</span> <h5>{{1.artists.0.name}}: {{1.name}}</h5></li>
       <li class="list-group-item"><span class="badge badge-info">2</span> {{2.artists.0.name}}: {{2.name}}</li>
@@ -157,7 +165,6 @@
          * Function responsible for making requests to Spotify for albums. limit is set to 50 per request.
          */
         function getAlbumsRequests(processed, albumCount){
-          console.log('processed: '+processed+' albumCount: '+albumCount);
           var deferreds = [];
           while(processed<albumCount){
             deferreds.push(
@@ -177,6 +184,7 @@
           }
           $.when.apply(null,deferreds).done(function(){
             removeSingles();
+            $("#loading").hide();
             displayMatchup();
           });
         }
@@ -196,7 +204,6 @@
             updateDisplay(loser);
           });
           $("#passButton").click(function(){
-            console.log('pass');
             resetView();
           });
         }
@@ -246,7 +253,6 @@
             total:albumCount,
             skipsRemaining:pass
           };
-          console.log(matchup);
           return matchup;
         }
 
@@ -261,7 +267,6 @@
             finalists[albums.length] = albums[losingAlbum];
             finalistsPlaceholder.innerHTML = finalistsTemplate(finalists);
             $('#finalists').show();
-            console.log(finalists);
           }
           albums.splice(losingAlbum,1);
         }
@@ -317,12 +322,14 @@
 
         $('#finished').hide();
         $('#notEnoughAlbums').hide();
+        $('#loading').hide();
         mobileViewCheck();
 
         if (error) {
           alert('There was an error during the authentication');
         } else {
           if (access_token) {
+            $('#loading').show();
             getAlbums();
             $('#login').hide();
             $('#loggedin').show();
