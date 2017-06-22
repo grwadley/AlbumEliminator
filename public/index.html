@@ -60,7 +60,7 @@
       </a></h3>
       <br></br>
       <div class="row">
-        <div class="col-md-6"><!--Column left-->
+        <div class="col-sm-6"><!--Column left-->
           <div class="thumbnail">
             <img src="{{album1.images.0.url}}" alt="...">
             <div class="caption">
@@ -71,7 +71,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6"><!--Column left-->
+        <div class="col-sm-6"><!--Column left-->
           <div class="thumbnail">
             <img src="{{album2.images.0.url}}" alt="...">
             <div class="caption">
@@ -326,7 +326,7 @@
         $('#finished').hide();
         $('#notEnoughAlbums').hide();
         $('#loading').hide();
-        //mobileViewCheck();
+        mobileViewCheck();
 
         if (error) {
           alert('There was an error during the authentication');
