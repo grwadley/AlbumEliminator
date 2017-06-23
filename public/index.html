@@ -24,7 +24,12 @@
     <div class="container-fluid">
 
     <div class="page-header">
-      <h1>Album Eliminator <small> your Spotify music showdown</small><i class="fa fa-spotify fa-lg pull-right" aria-hidden="true"></i></h1>
+      <h1>Album Eliminator <small> your Spotify music showdown</small></h1>
+      <div id="links" class="pull-right">
+        <a href="//www.reddit.com/submit" onclick="window.location = '//www.reddit.com/submit?url=' + encodeURIComponent(window.location.href.split('#')[0]); return false"><i class="fa fa-reddit" aria-hidden="true"></i></a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://album-eliminator.herokuapp.com/&description=Pick an album, pick again, find out your top 10" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+        <a href="https://github.com/grwadley/AlbumEliminator"><i class="fa fa-github" aria-hidden="true"></i></a>
+      </div>
     </div>
 
     </div> <!-- /container -->
@@ -66,7 +71,7 @@
       </a></h3>
       <br></br>
       <div class="row">
-        <div class="col-sm-6"><!--Column left-->
+        <div class="col-md-6"><!--Column left-->
           <div class="thumbnail">
             <img src="{{album1.images.0.url}}" alt="...">
             <div class="caption">
@@ -77,7 +82,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6"><!--Column left-->
+        <div class="col-md-6"><!--Column left-->
           <div class="thumbnail">
             <img src="{{album2.images.0.url}}" alt="...">
             <div class="caption">
@@ -267,6 +272,7 @@
          * remove the unselected album from the list. If this is one of the final 10 albums, add it to finalists
          */
         function removeLoser(losingAlbum){
+          $("#note").hide();
           eliminated.push(albums[losingAlbum]);
 
           if(albums.length<11){
